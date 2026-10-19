@@ -1,0 +1,242 @@
+[
+  {
+    "case": "FullSideBySide-1_1-before",
+    "size": [
+      160,
+      240
+    ],
+    "sar": "1",
+    "stereo": true,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=trunc(iw/4)*2:ih:0:0"
+  },
+  {
+    "case": "FullSideBySide-1_1-after",
+    "size": [
+      160,
+      240
+    ],
+    "sar": "1",
+    "stereo": false,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=trunc(iw/4)*2:ih:0:0,sidedata=mode=delete:type=STEREO3D"
+  },
+  {
+    "case": "FullSideBySide-4_3-before",
+    "size": [
+      160,
+      240
+    ],
+    "sar": "4/3",
+    "stereo": true,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=trunc(iw/4)*2:ih:0:0"
+  },
+  {
+    "case": "FullSideBySide-4_3-after",
+    "size": [
+      160,
+      240
+    ],
+    "sar": "4/3",
+    "stereo": false,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=trunc(iw/4)*2:ih:0:0,sidedata=mode=delete:type=STEREO3D"
+  },
+  {
+    "case": "HalfSideBySide-1_1-before",
+    "size": [
+      320,
+      240
+    ],
+    "sar": "1",
+    "stereo": true,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=trunc(iw/4)*2:ih:0:0,scale=iw*2:ih,setsar=sar=1"
+  },
+  {
+    "case": "HalfSideBySide-1_1-after",
+    "size": [
+      320,
+      240
+    ],
+    "sar": "1",
+    "stereo": false,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=trunc(iw/4)*2:ih:0:0,scale=iw*2:ih,setsar=sar*2,sidedata=mode=delete:type=STEREO3D"
+  },
+  {
+    "case": "HalfSideBySide-4_3-before",
+    "size": [
+      320,
+      240
+    ],
+    "sar": "1",
+    "stereo": true,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=trunc(iw/4)*2:ih:0:0,scale=iw*2:ih,setsar=sar=1"
+  },
+  {
+    "case": "HalfSideBySide-4_3-after",
+    "size": [
+      320,
+      240
+    ],
+    "sar": "4/3",
+    "stereo": false,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=trunc(iw/4)*2:ih:0:0,scale=iw*2:ih,setsar=sar*2,sidedata=mode=delete:type=STEREO3D"
+  },
+  {
+    "case": "FullTopAndBottom-1_1-before",
+    "size": [
+      320,
+      120
+    ],
+    "sar": "1",
+    "stereo": true,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=iw:trunc(ih/4)*2:0:0"
+  },
+  {
+    "case": "FullTopAndBottom-1_1-after",
+    "size": [
+      320,
+      120
+    ],
+    "sar": "1",
+    "stereo": false,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=iw:trunc(ih/4)*2:0:0,sidedata=mode=delete:type=STEREO3D"
+  },
+  {
+    "case": "FullTopAndBottom-4_3-before",
+    "size": [
+      320,
+      120
+    ],
+    "sar": "4/3",
+    "stereo": true,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=iw:trunc(ih/4)*2:0:0"
+  },
+  {
+    "case": "FullTopAndBottom-4_3-after",
+    "size": [
+      320,
+      120
+    ],
+    "sar": "4/3",
+    "stereo": false,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=iw:trunc(ih/4)*2:0:0,sidedata=mode=delete:type=STEREO3D"
+  },
+  {
+    "case": "HalfTopAndBottom-1_1-before",
+    "size": [
+      320,
+      240
+    ],
+    "sar": "1",
+    "stereo": true,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=iw:trunc(ih/4)*2:0:0,scale=iw:ih*2,setsar=sar=1"
+  },
+  {
+    "case": "HalfTopAndBottom-1_1-after",
+    "size": [
+      320,
+      240
+    ],
+    "sar": "1",
+    "stereo": false,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=iw:trunc(ih/4)*2:0:0,scale=iw:ih*2,setsar=sar/2,sidedata=mode=delete:type=STEREO3D"
+  },
+  {
+    "case": "HalfTopAndBottom-4_3-before",
+    "size": [
+      320,
+      240
+    ],
+    "sar": "1",
+    "stereo": true,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=iw:trunc(ih/4)*2:0:0,scale=iw:ih*2,setsar=sar=1"
+  },
+  {
+    "case": "HalfTopAndBottom-4_3-after",
+    "size": [
+      320,
+      240
+    ],
+    "sar": "4/3",
+    "stereo": false,
+    "mean_rgb": [
+      253.0,
+      0.0,
+      0.0
+    ],
+    "filter": "crop=iw:trunc(ih/4)*2:0:0,scale=iw:ih*2,setsar=sar/2,sidedata=mode=delete:type=STEREO3D"
+  }
+]

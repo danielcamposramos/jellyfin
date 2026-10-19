@@ -1,0 +1,44 @@
+  Determining projects to restore...
+  Restored /work/jellyfin/MediaBrowser.Controller/MediaBrowser.Controller.csproj (in 266 ms).
+  Restored /work/jellyfin/MediaBrowser.Model/MediaBrowser.Model.csproj (in 266 ms).
+  Restored /work/jellyfin/MediaBrowser.Common/MediaBrowser.Common.csproj (in 266 ms).
+  Restored /work/jellyfin/MediaBrowser.MediaEncoding/MediaBrowser.MediaEncoding.csproj (in 266 ms).
+  Restored /work/jellyfin/src/Jellyfin.MediaEncoding.Keyframes/Jellyfin.MediaEncoding.Keyframes.csproj (in 3 ms).
+  Restored /work/jellyfin/Jellyfin.Data/Jellyfin.Data.csproj (in 3 ms).
+  Restored /work/jellyfin/src/Jellyfin.Extensions/Jellyfin.Extensions.csproj (in 7 ms).
+  Restored /work/jellyfin/Emby.Naming/Emby.Naming.csproj (in 23 ms).
+  Restored /work/jellyfin/src/Jellyfin.Database/Jellyfin.Database.Implementations/Jellyfin.Database.Implementations.csproj (in 51 ms).
+  Restored /work/jellyfin/tests/Jellyfin.MediaEncoding.Tests/Jellyfin.MediaEncoding.Tests.csproj (in 82 ms).
+  Jellyfin.MediaEncoding.Keyframes -> /work/jellyfin/src/Jellyfin.MediaEncoding.Keyframes/bin/Release/net10.0/Jellyfin.MediaEncoding.Keyframes.dll
+  Jellyfin.Extensions -> /work/jellyfin/src/Jellyfin.Extensions/bin/Release/net10.0/Jellyfin.Extensions.dll
+  Jellyfin.Database.Implementations -> /work/jellyfin/src/Jellyfin.Database/Jellyfin.Database.Implementations/bin/Release/net10.0/Jellyfin.Database.Implementations.dll
+  Jellyfin.Data -> /work/jellyfin/Jellyfin.Data/bin/Release/net10.0/Jellyfin.Data.dll
+  MediaBrowser.Model -> /work/jellyfin/MediaBrowser.Model/bin/Release/net10.0/MediaBrowser.Model.dll
+  MediaBrowser.Common -> /work/jellyfin/MediaBrowser.Common/bin/Release/net10.0/MediaBrowser.Common.dll
+  Emby.Naming -> /work/jellyfin/Emby.Naming/bin/Release/net10.0/Emby.Naming.dll
+  MediaBrowser.Controller -> /work/jellyfin/MediaBrowser.Controller/bin/Release/net10.0/MediaBrowser.Controller.dll
+  MediaBrowser.MediaEncoding -> /work/jellyfin/MediaBrowser.MediaEncoding/bin/Release/net10.0/MediaBrowser.MediaEncoding.dll
+  Jellyfin.MediaEncoding.Tests -> /work/jellyfin/tests/Jellyfin.MediaEncoding.Tests/bin/Release/net10.0/Jellyfin.MediaEncoding.Tests.dll
+Test run for /work/jellyfin/tests/Jellyfin.MediaEncoding.Tests/bin/Release/net10.0/Jellyfin.MediaEncoding.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.83]     Jellyfin.MediaEncoding.Tests.ApplePlatformHelperTests.GetSysctlValue_CpuBrand_NotEmpty [SKIP]
+  Skipped Jellyfin.MediaEncoding.Tests.ApplePlatformHelperTests.GetSysctlValue_CpuBrand_NotEmpty [1 ms]
+
+Passed!  - Failed:     0, Passed:   126, Skipped:     1, Total:   127, Duration: 1 s - Jellyfin.MediaEncoding.Tests.dll (net10.0)
+  Determining projects to restore...
+  Restored /work/jellyfin/tests/Jellyfin.Controller.Tests/Jellyfin.Controller.Tests.csproj (in 280 ms).
+  8 of 9 projects are up-to-date for restore.
+  Jellyfin.Extensions -> /work/jellyfin/src/Jellyfin.Extensions/bin/Release/net10.0/Jellyfin.Extensions.dll
+  Jellyfin.Database.Implementations -> /work/jellyfin/src/Jellyfin.Database/Jellyfin.Database.Implementations/bin/Release/net10.0/Jellyfin.Database.Implementations.dll
+  Jellyfin.MediaEncoding.Keyframes -> /work/jellyfin/src/Jellyfin.MediaEncoding.Keyframes/bin/Release/net10.0/Jellyfin.MediaEncoding.Keyframes.dll
+  Jellyfin.Data -> /work/jellyfin/Jellyfin.Data/bin/Release/net10.0/Jellyfin.Data.dll
+  MediaBrowser.Model -> /work/jellyfin/MediaBrowser.Model/bin/Release/net10.0/MediaBrowser.Model.dll
+  MediaBrowser.Common -> /work/jellyfin/MediaBrowser.Common/bin/Release/net10.0/MediaBrowser.Common.dll
+  Emby.Naming -> /work/jellyfin/Emby.Naming/bin/Release/net10.0/Emby.Naming.dll
+  MediaBrowser.Controller -> /work/jellyfin/MediaBrowser.Controller/bin/Release/net10.0/MediaBrowser.Controller.dll
+  Jellyfin.Controller.Tests -> /work/jellyfin/tests/Jellyfin.Controller.Tests/bin/Release/net10.0/Jellyfin.Controller.Tests.dll
+Test run for /work/jellyfin/tests/Jellyfin.Controller.Tests/bin/Release/net10.0/Jellyfin.Controller.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:   214, Skipped:     0, Total:   214, Duration: 714 ms - Jellyfin.Controller.Tests.dll (net10.0)
+APICompat ran successfully without finding any breaking changes.
