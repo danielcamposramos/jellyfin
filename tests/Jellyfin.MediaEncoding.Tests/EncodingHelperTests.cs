@@ -10,9 +10,9 @@ namespace Jellyfin.MediaEncoding.Tests
         [InlineData(null, "")]
         [InlineData(Video3DFormat.MVC, "")]
         [InlineData(Video3DFormat.FullSideBySide, "crop=trunc(iw/4)*2:ih:0:0,sidedata=mode=delete:type=STEREO3D")]
-        [InlineData(Video3DFormat.HalfSideBySide, "crop=trunc(iw/4)*2:ih:0:0,scale=iw*2:ih,setsar=sar*2,sidedata=mode=delete:type=STEREO3D")]
+        [InlineData(Video3DFormat.HalfSideBySide, @"setsar=sar*if(lt(dar\,2.5)\,2\,1):max=1000000,crop=trunc(iw/4)*2:ih:0:0,scale=iw*2:ih,sidedata=mode=delete:type=STEREO3D")]
         [InlineData(Video3DFormat.FullTopAndBottom, "crop=iw:trunc(ih/4)*2:0:0,sidedata=mode=delete:type=STEREO3D")]
-        [InlineData(Video3DFormat.HalfTopAndBottom, "crop=iw:trunc(ih/4)*2:0:0,scale=iw:ih*2,setsar=sar/2,sidedata=mode=delete:type=STEREO3D")]
+        [InlineData(Video3DFormat.HalfTopAndBottom, @"setsar=sar/if(gt(dar\,1.2)\,2\,1):max=1000000,crop=iw:trunc(ih/4)*2:0:0,scale=iw:ih*2,sidedata=mode=delete:type=STEREO3D")]
         public void GetVideo3DFilter_Valid_Success(Video3DFormat? threedFormat, string expected)
         {
             Assert.Equal(expected, EncodingHelper.GetVideo3DFilter(threedFormat));

@@ -3700,14 +3700,18 @@ namespace MediaBrowser.Controller.MediaEncoding
         {
             // Keep the left/top view and drop the other one. The half formats squeeze both eyes into a
             // single frame, so the remaining eye has to be stretched back to the full frame size.
-            // Restore the source SAR after scaling and remove the obsolete stereo signalling.
-            // Cropped dimensions are rounded down to a multiple of two for the encoders.
+            // The SAR of a codec describes the packed frame, so the stretched eye takes the frame's shape:
+            // double it along the squeezed axis ahead of the scale, an unset SAR counting as square.
+            // Matroska gives the display size of one view instead (RFC 9559 section 18.10), which FFmpeg folds
+            // into the SAR. Nothing tells the two apart, so a frame that is 2.5:1 or wider (1.2:1 or narrower
+            // for top and bottom) at its SAR is taken to carry the view's shape already and keeps it.
+            // Remove the obsolete stereo signalling. Cropped dimensions are rounded down to a multiple of two for the encoders.
             return threedFormat switch
             {
                 Video3DFormat.FullSideBySide => "crop=trunc(iw/4)*2:ih:0:0,sidedata=mode=delete:type=STEREO3D",
-                Video3DFormat.HalfSideBySide => "crop=trunc(iw/4)*2:ih:0:0,scale=iw*2:ih,setsar=sar*2,sidedata=mode=delete:type=STEREO3D",
+                Video3DFormat.HalfSideBySide => @"setsar=sar*if(lt(dar\,2.5)\,2\,1):max=1000000,crop=trunc(iw/4)*2:ih:0:0,scale=iw*2:ih,sidedata=mode=delete:type=STEREO3D",
                 Video3DFormat.FullTopAndBottom => "crop=iw:trunc(ih/4)*2:0:0,sidedata=mode=delete:type=STEREO3D",
-                Video3DFormat.HalfTopAndBottom => "crop=iw:trunc(ih/4)*2:0:0,scale=iw:ih*2,setsar=sar/2,sidedata=mode=delete:type=STEREO3D",
+                Video3DFormat.HalfTopAndBottom => @"setsar=sar/if(gt(dar\,1.2)\,2\,1):max=1000000,crop=iw:trunc(ih/4)*2:0:0,scale=iw:ih*2,sidedata=mode=delete:type=STEREO3D",
                 // The base view of an MVC stream already is a plain 2D frame, the decoder drops the other view.
                 _ => string.Empty
             };
