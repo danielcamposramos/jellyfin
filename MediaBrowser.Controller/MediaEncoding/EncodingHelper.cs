@@ -4830,6 +4830,8 @@ namespace MediaBrowser.Controller.MediaEncoding
                 // hw transpose & scale & tonemap(w/o procamp)
                 if (!string.IsNullOrEmpty(crop3DArgs))
                 {
+                    // The view vpp_qsv keeps is a plain 2D frame, drop the stereo signalling as the software chain does.
+                    mainFilters.Add("sidedata=mode=delete:type=STEREO3D");
                     mainFilters.Add(GetVideo3DHwSarFilter(threeDFormat, inW, inH, false));
                 }
 
@@ -5088,6 +5090,8 @@ namespace MediaBrowser.Controller.MediaEncoding
                 // hw transpose(qsv vpp) & scale
                 if (!string.IsNullOrEmpty(crop3DArgs))
                 {
+                    // The view vpp_qsv keeps is a plain 2D frame, drop the stereo signalling as the software chain does.
+                    mainFilters.Add("sidedata=mode=delete:type=STEREO3D");
                     mainFilters.Add(GetVideo3DHwSarFilter(threeDFormat, inW, inH, false));
                 }
 
@@ -5689,6 +5693,8 @@ namespace MediaBrowser.Controller.MediaEncoding
                 var libplaceboFilter = GetLibplaceboFilter(options, libplaceboFormat, doVkTonemap, swpInW, swpInH, reqW, reqH, reqMaxW, reqMaxH, isMjpegEncoder, crop3DArgs);
                 if (doVk3DFlatten)
                 {
+                    // The view libplacebo keeps is a plain 2D frame, drop the stereo signalling as the software chain does.
+                    mainFilters.Add("sidedata=mode=delete:type=STEREO3D");
                     mainFilters.Add(GetVideo3DHwSarFilter(threeDFormat, inW, inH, true));
                 }
 
