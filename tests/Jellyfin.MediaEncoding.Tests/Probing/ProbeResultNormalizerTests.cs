@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -261,6 +262,48 @@ namespace Jellyfin.MediaEncoding.Tests.Probing
             Assert.Null(video.Height);
             Assert.Equal(expectedAspectRatio, video.AspectRatio);
             Assert.False(video.IsAnamorphic);
+        }
+
+        [Theory]
+        // FFmpeg folds Matroska's DisplayWidth and DisplayHeight, the size of one view, into the SAR.
+        [InlineData("left_right", 1920, 1080, "2:1", Video3DFormat.HalfSideBySide)] // DisplayWidth 1920 or none
+        [InlineData("left_right", 3840, 1080, "1:1", Video3DFormat.FullSideBySide)] // DisplayWidth 1920
+        [InlineData("left_right", 1920, 1080, "1:1", Video3DFormat.FullSideBySide)] // DisplayWidth 960
+        [InlineData("left_right", 720, 576, "128:45", Video3DFormat.HalfSideBySide)] // DisplayWidth 1024
+        [InlineData("left_right", 1080, 1080, "2:1", Video3DFormat.FullSideBySide)] // square views keep their SAR
+        [InlineData("top_bottom", 1920, 1080, "1:2", Video3DFormat.HalfTopAndBottom)] // DisplayHeight 1080 or none
+        [InlineData("top_bottom", 1920, 2160, "1:1", Video3DFormat.FullTopAndBottom)] // DisplayHeight 1080
+        // Without a display size the frame's shape decides.
+        [InlineData("left_right", 1920, 1080, null, Video3DFormat.HalfSideBySide)]
+        [InlineData("left_right", 3840, 1080, "0:1", Video3DFormat.FullSideBySide)]
+        [InlineData("top_bottom", 1920, 1080, null, Video3DFormat.HalfTopAndBottom)]
+        [InlineData("top_bottom", 1920, 2160, "0:1", Video3DFormat.FullTopAndBottom)]
+        [InlineData("mono", 1920, 1080, "1:1", null)]
+        [InlineData("right_left", 1920, 1080, "2:1", null)]
+        [InlineData("bottom_top", 1920, 1080, "1:2", null)]
+        public void GetMediaInfo_StereoMode_HalfOrFullFromDeclaredViewSize(string stereoMode, int width, int height, string? sar, Video3DFormat? expected)
+        {
+            var internalMediaInfoResult = new InternalMediaInfoResult
+            {
+                Streams =
+                [
+                    new MediaStreamInfo
+                    {
+                        Index = 0,
+                        CodecType = CodecType.Video,
+                        CodecName = "h264",
+                        Width = width,
+                        Height = height,
+                        SampleAspectRatio = sar,
+                        Tags = new Dictionary<string, string?> { ["stereo_mode"] = stereoMode }
+                    }
+                ],
+                Format = new MediaFormatInfo { FormatName = "matroska,webm" }
+            };
+
+            MediaInfo res = _probeResultNormalizer.GetMediaInfo(internalMediaInfoResult, VideoType.VideoFile, false, "Test Data/Probing/video_3d.mkv", MediaProtocol.File);
+
+            Assert.Equal(expected, res.Video3DFormat);
         }
 
         [Fact]

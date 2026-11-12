@@ -245,9 +245,9 @@ namespace MediaBrowser.MediaEncoding.Probing
 
                 ExtractTimestamp(info);
 
-                if (tags.TryGetValue("stereo_mode", out var stereoMode) && string.Equals(stereoMode, "left_right", StringComparison.OrdinalIgnoreCase))
+                if (tags.TryGetValue("stereo_mode", out var stereoMode))
                 {
-                    info.Video3DFormat = Video3DFormat.FullSideBySide;
+                    info.Video3DFormat = GetVideo3DFormat(stereoMode, tagStream);
                 }
 
                 foreach (var mediaStream in info.MediaStreams)
@@ -1205,6 +1205,52 @@ namespace MediaBrowser.MediaEncoding.Probing
             }
 
             return string.Equals(sar, "1:1", StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Gets the 3D format of a Matroska StereoMode, half or full from the size it gives one view.
+        /// </summary>
+        /// <param name="stereoMode">The stereo_mode tag of the stream.</param>
+        /// <param name="stream">The video stream.</param>
+        /// <returns>The 3D format, or null for a mode other than side by side or top and bottom with the left view first.</returns>
+        private static Video3DFormat? GetVideo3DFormat(string stereoMode, MediaStreamInfo stream)
+        {
+            var isSideBySide = string.Equals(stereoMode, "left_right", StringComparison.OrdinalIgnoreCase);
+            if (!isSideBySide && !string.Equals(stereoMode, "top_bottom", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            var full = isSideBySide ? Video3DFormat.FullSideBySide : Video3DFormat.FullTopAndBottom;
+            var half = isSideBySide ? Video3DFormat.HalfSideBySide : Video3DFormat.HalfTopAndBottom;
+            if (stream?.Width is not > 0 || stream.Height is not > 0)
+            {
+                return full;
+            }
+
+            double frameAspect = (double)stream.Width.Value / stream.Height.Value;
+            var parts = (stream.SampleAspectRatio ?? string.Empty).Split(':');
+            if (parts.Length == 2
+                && double.TryParse(parts[0], CultureInfo.InvariantCulture, out var num)
+                && double.TryParse(parts[1], CultureInfo.InvariantCulture, out var den)
+                && num > 0
+                && den > 0)
+            {
+                // FFmpeg folds DisplayWidth and DisplayHeight, the display size of one view (RFC 9559 section 18.10),
+                // into the SAR. A view shown about twice as wide (or tall) as it is coded is half. Half is kept to frames
+                // the flattening takes as carrying the SAR of one view (see EncodingHelper.GetVideo3DFilter), full keeps
+                // the declared SAR as it is and fits any view.
+                var sar = num / den;
+                return isSideBySide
+                    ? (sar > 1.5 && frameAspect * sar >= 2.5 ? half : full)
+                    : (sar < 1 / 1.5 && frameAspect * sar <= 1.2 ? half : full);
+            }
+
+            // Without a display size the frame's shape is the guess: two full views make a frame 2.5:1 or wider
+            // side by side, and 1.2:1 or narrower top and bottom.
+            return isSideBySide
+                ? (frameAspect >= 2.5 ? full : half)
+                : (frameAspect <= 1.2 ? full : half);
         }
 
         /// <summary>
