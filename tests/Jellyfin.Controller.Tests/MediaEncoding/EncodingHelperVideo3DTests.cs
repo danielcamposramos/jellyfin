@@ -38,18 +38,18 @@ public class EncodingHelperVideo3DTests
     }
 
     [Theory]
-    [InlineData(true, Video3DFormat.FullSideBySide, false, "setsar=sar*1920/3840,libplacebo=upscaler=none:downscaler=none:w=1920:h=806:crop_w=1920:crop_h=806:crop_x=0:crop_y=0:format=nv12,format=vulkan", 0, 0)]
-    [InlineData(true, Video3DFormat.HalfSideBySide, false, "libplacebo=upscaler=none:downscaler=none:w=3840:h=806:crop_w=1920:crop_h=806:crop_x=0:crop_y=0:format=nv12,format=vulkan", 0, 0)]
-    [InlineData(true, Video3DFormat.FullTopAndBottom, false, "setsar=sar*806/402,libplacebo=upscaler=none:downscaler=none:w=3840:h=402:crop_w=3840:crop_h=402:crop_x=0:crop_y=0:format=nv12,format=vulkan", 0, 0)]
-    [InlineData(true, Video3DFormat.HalfTopAndBottom, false, "libplacebo=upscaler=none:downscaler=none:w=3840:h=806:crop_w=3840:crop_h=402:crop_x=0:crop_y=0:format=nv12,format=vulkan", 0, 0)]
-    [InlineData(true, Video3DFormat.FullSideBySide, true, "setsar=sar*1920/3840,libplacebo=upscaler=none:downscaler=none:w=1920:h=806:crop_w=1920:crop_h=806:crop_x=0:crop_y=0:format=bgra:range=pc,format=vulkan", 1920, 806)]
-    [InlineData(true, Video3DFormat.HalfSideBySide, true, "libplacebo=upscaler=none:downscaler=none:w=3840:h=806:crop_w=1920:crop_h=806:crop_x=0:crop_y=0:format=bgra:range=pc,format=vulkan", 3840, 806)]
-    [InlineData(true, Video3DFormat.FullTopAndBottom, true, "setsar=sar*806/402,libplacebo=upscaler=none:downscaler=none:w=3840:h=402:crop_w=3840:crop_h=402:crop_x=0:crop_y=0:format=bgra:range=pc,format=vulkan", 3840, 402)]
-    [InlineData(true, Video3DFormat.HalfTopAndBottom, true, "libplacebo=upscaler=none:downscaler=none:w=3840:h=806:crop_w=3840:crop_h=402:crop_x=0:crop_y=0:format=bgra:range=pc,format=vulkan", 3840, 806)]
+    [InlineData(true, Video3DFormat.FullSideBySide, false, "setsar=sar*1920/3840:max=1000000,libplacebo=upscaler=none:downscaler=none:w=1920:h=806:crop_w=1920:crop_h=806:crop_x=0:crop_y=0:format=nv12,format=vulkan", 0, 0)]
+    [InlineData(true, Video3DFormat.HalfSideBySide, false, @"setsar=sar*if(gte(dar\,2.5)\,1920/3840\,1):max=1000000,libplacebo=upscaler=none:downscaler=none:w=3840:h=806:crop_w=1920:crop_h=806:crop_x=0:crop_y=0:format=nv12,format=vulkan", 0, 0)]
+    [InlineData(true, Video3DFormat.FullTopAndBottom, false, "setsar=sar*806/402:max=1000000,libplacebo=upscaler=none:downscaler=none:w=3840:h=402:crop_w=3840:crop_h=402:crop_x=0:crop_y=0:format=nv12,format=vulkan", 0, 0)]
+    [InlineData(true, Video3DFormat.HalfTopAndBottom, false, @"setsar=sar*if(lte(dar\,1.2)\,806/402\,1):max=1000000,libplacebo=upscaler=none:downscaler=none:w=3840:h=806:crop_w=3840:crop_h=402:crop_x=0:crop_y=0:format=nv12,format=vulkan", 0, 0)]
+    [InlineData(true, Video3DFormat.FullSideBySide, true, "setsar=sar*1920/3840:max=1000000,libplacebo=upscaler=none:downscaler=none:w=1920:h=806:crop_w=1920:crop_h=806:crop_x=0:crop_y=0:format=bgra:range=pc,format=vulkan", 1920, 806)]
+    [InlineData(true, Video3DFormat.HalfSideBySide, true, @"setsar=sar*if(gte(dar\,2.5)\,1920/3840\,1):max=1000000,libplacebo=upscaler=none:downscaler=none:w=3840:h=806:crop_w=1920:crop_h=806:crop_x=0:crop_y=0:format=bgra:range=pc,format=vulkan", 3840, 806)]
+    [InlineData(true, Video3DFormat.FullTopAndBottom, true, "setsar=sar*806/402:max=1000000,libplacebo=upscaler=none:downscaler=none:w=3840:h=402:crop_w=3840:crop_h=402:crop_x=0:crop_y=0:format=bgra:range=pc,format=vulkan", 3840, 402)]
+    [InlineData(true, Video3DFormat.HalfTopAndBottom, true, @"setsar=sar*if(lte(dar\,1.2)\,806/402\,1):max=1000000,libplacebo=upscaler=none:downscaler=none:w=3840:h=806:crop_w=3840:crop_h=402:crop_x=0:crop_y=0:format=bgra:range=pc,format=vulkan", 3840, 806)]
     [InlineData(false, Video3DFormat.FullSideBySide, true, "vpp_qsv=w=1920:h=806:cw=1920:ch=806:cx=0:cy=0", 1920, 806)]
-    [InlineData(false, Video3DFormat.HalfSideBySide, true, "vpp_qsv=w=3840:h=806:cw=1920:ch=806:cx=0:cy=0", 3840, 806)]
+    [InlineData(false, Video3DFormat.HalfSideBySide, true, @"setsar=sar*if(gte(dar\,2.5)\,1920/3840\,1):max=1000000,vpp_qsv=w=3840:h=806:cw=1920:ch=806:cx=0:cy=0", 3840, 806)]
     [InlineData(false, Video3DFormat.FullTopAndBottom, true, "vpp_qsv=w=3840:h=402:cw=3840:ch=402:cx=0:cy=0", 3840, 402)]
-    [InlineData(false, Video3DFormat.HalfTopAndBottom, true, "vpp_qsv=w=3840:h=806:cw=3840:ch=402:cx=0:cy=0", 3840, 806)]
+    [InlineData(false, Video3DFormat.HalfTopAndBottom, true, @"setsar=sar*if(lte(dar\,1.2)\,806/402\,1):max=1000000,vpp_qsv=w=3840:h=806:cw=3840:ch=402:cx=0:cy=0", 3840, 806)]
     public void GetVideoProcessingFilterParam_HardwareCrop_KeepsOneViewWithItsOwnAspect(
         bool isAmdVaapi,
         Video3DFormat format,
@@ -67,6 +67,7 @@ public class EncodingHelperVideo3DTests
 
         Assert.Contains(expected, args, StringComparison.Ordinal);
         Assert.DoesNotContain("crop=trunc", args, StringComparison.Ordinal);
+        Assert.Equal(expected.StartsWith("setsar=", StringComparison.Ordinal), args.Contains("setsar=", StringComparison.Ordinal));
         if (graphicalSubtitles)
         {
             Assert.Contains($@"pad=max({canvasWidth}\,iw):max({canvasHeight}\,ih):(ow-iw)/2:(oh-ih)/2:black@0,crop={canvasWidth}:{canvasHeight}", args, StringComparison.Ordinal);
@@ -82,7 +83,7 @@ public class EncodingHelperVideo3DTests
     [InlineData(HardwareAccelerationType.vaapi, false, false, "h264_vaapi", null, false)]
     [InlineData(HardwareAccelerationType.qsv, false, true, "h264_qsv", null, true)]
     [InlineData(HardwareAccelerationType.qsv, false, false, "h264_qsv", "vpp_qsv=w=1920:h=806:cw=1920:ch=806:cx=0:cy=0", true)]
-    [InlineData(HardwareAccelerationType.vaapi, true, false, "h264_vaapi", "setsar=sar*1920/3840,libplacebo=upscaler=none:downscaler=none:w=1920:h=806:crop_w=1920:crop_h=806:crop_x=0:crop_y=0:format=bgra:range=pc", true)]
+    [InlineData(HardwareAccelerationType.vaapi, true, false, "h264_vaapi", "setsar=sar*1920/3840:max=1000000,libplacebo=upscaler=none:downscaler=none:w=1920:h=806:crop_w=1920:crop_h=806:crop_x=0:crop_y=0:format=bgra:range=pc", true)]
     public void GetVideoProcessingFilterParam_FullSideBySide_FlattensOnceToOneView(
         HardwareAccelerationType hardwareAcceleration,
         bool isAmd,

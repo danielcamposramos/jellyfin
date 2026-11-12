@@ -3770,15 +3770,24 @@ namespace MediaBrowser.Controller.MediaEncoding
                 : null;
         }
 
-        private static string GetVideo3DLibplaceboSarFilter(Video3DFormat? threedFormat, int? videoWidth, int? videoHeight)
+        private static string GetVideo3DHwSarFilter(Video3DFormat? threedFormat, int? videoWidth, int? videoHeight, bool isLibplacebo)
         {
-            // libplacebo derives the output SAR from the uncropped frame. Pre-scale the input SAR by the share of
-            // the frame the view covers, ahead of libplacebo so an unset SAR still comes out as 1:1.
-            var (flatWidth, flatHeight) = GetVideo3DFlattenedSize(threedFormat, videoWidth, videoHeight);
+            // Set ahead of the hardware crop, so an unset SAR still comes out as 1:1. libplacebo derives the output
+            // SAR from the uncropped frame, so a full format scales it by the share of the frame the view covers,
+            // while vpp_qsv keeps it as it is. The half formats stretch the view back to the frame on both:
+            // a SAR that describes the packed frame stays, one that describes each view (see GetVideo3DFilter)
+            // is scaled by that share. max=1000000 keeps the ratio exact for odd view sizes.
+            if (GetVideo3DCropSize(threedFormat, videoWidth, videoHeight) is not (int cropWidth, int cropHeight))
+            {
+                return null;
+            }
+
             return threedFormat switch
             {
-                Video3DFormat.FullSideBySide => string.Format(CultureInfo.InvariantCulture, "setsar=sar*{0}/{1}", flatWidth, videoWidth),
-                Video3DFormat.FullTopAndBottom => string.Format(CultureInfo.InvariantCulture, "setsar=sar*{0}/{1}", videoHeight, flatHeight),
+                Video3DFormat.FullSideBySide when isLibplacebo => string.Format(CultureInfo.InvariantCulture, "setsar=sar*{0}/{1}:max=1000000", cropWidth, videoWidth),
+                Video3DFormat.FullTopAndBottom when isLibplacebo => string.Format(CultureInfo.InvariantCulture, "setsar=sar*{0}/{1}:max=1000000", videoHeight, cropHeight),
+                Video3DFormat.HalfSideBySide => string.Format(CultureInfo.InvariantCulture, @"setsar=sar*if(gte(dar\,2.5)\,{0}/{1}\,1):max=1000000", cropWidth, videoWidth),
+                Video3DFormat.HalfTopAndBottom => string.Format(CultureInfo.InvariantCulture, @"setsar=sar*if(lte(dar\,1.2)\,{0}/{1}\,1):max=1000000", videoHeight, cropHeight),
                 _ => null
             };
         }
@@ -4819,6 +4828,11 @@ namespace MediaBrowser.Controller.MediaEncoding
                 }
 
                 // hw transpose & scale & tonemap(w/o procamp)
+                if (!string.IsNullOrEmpty(crop3DArgs))
+                {
+                    mainFilters.Add(GetVideo3DHwSarFilter(threeDFormat, inW, inH, false));
+                }
+
                 mainFilters.Add(hwScaleFilter);
 
                 // hw tonemap(w/ procamp)
@@ -5072,6 +5086,11 @@ namespace MediaBrowser.Controller.MediaEncoding
                 }
 
                 // hw transpose(qsv vpp) & scale
+                if (!string.IsNullOrEmpty(crop3DArgs))
+                {
+                    mainFilters.Add(GetVideo3DHwSarFilter(threeDFormat, inW, inH, false));
+                }
+
                 mainFilters.Add(hwScaleFilter);
             }
 
@@ -5670,7 +5689,7 @@ namespace MediaBrowser.Controller.MediaEncoding
                 var libplaceboFilter = GetLibplaceboFilter(options, libplaceboFormat, doVkTonemap, swpInW, swpInH, reqW, reqH, reqMaxW, reqMaxH, isMjpegEncoder, crop3DArgs);
                 if (doVk3DFlatten)
                 {
-                    mainFilters.Add(GetVideo3DLibplaceboSarFilter(threeDFormat, inW, inH));
+                    mainFilters.Add(GetVideo3DHwSarFilter(threeDFormat, inW, inH, true));
                 }
 
                 mainFilters.Add(libplaceboFilter);
